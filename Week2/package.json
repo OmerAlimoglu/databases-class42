@@ -2,16 +2,14 @@
   "name": "week2",
   "version": "1.0.0",
   "description": "These are the topics for week 2:",
-  "main": "create-table.js",
+  "main": "ex-1_keys.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon create-table.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ex-1_keys.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mysql": "^2.18.1",
-    "nodemon": "^2.0.22"
+    "mysql": "^2.18.1"
   }
 }
