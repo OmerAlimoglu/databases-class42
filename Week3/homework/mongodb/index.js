@@ -48,7 +48,7 @@ async function findEpisodesExercises(client) {
     .findOne({ title: "BLACK RIVER" });
 
   console.log(
-    `The season and episode number of the "BLACK RIVER" episode is S02E${seasonAndEpisode.episode}`
+    `The season and episode number of the "BLACK RIVER" episode is ${seasonAndEpisode.episode}`
   );
 
   const cliffEpisodes = await client
@@ -106,11 +106,6 @@ async function updateEpisodeExercises(client) {
 }
 
 async function deleteEpisodeExercise(client) {
-  /**
-   * It seems an errand episode has gotten into our data.
-   * This is episode 14 in season 31. Please remove it and verify that it has been removed!
-   */
-
   const result = await client
     .db("databaseWeek3")
     .collection("bob_ross_episodes")
