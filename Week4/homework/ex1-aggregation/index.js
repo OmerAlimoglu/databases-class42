@@ -1,12 +1,11 @@
 const fs = require("fs");
 const csv = require("csv-parser");
 const { MongoClient } = require("mongodb");
+require("dotenv").config();
+const URI = process.env.MONGODB_URL;
 
 async function main() {
-  const uri =
-    "mongodb+srv://aoalimoglu:learningmongodb@cluster0.6j9s6kd.mongodb.net/databaseWeek4?retryWrites=true&w=majority";
-
-  const client = new MongoClient(uri, {
+  const client = new MongoClient(URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
@@ -42,10 +41,11 @@ async function main() {
     // total population for each continent per year and age
     const result2 = await getTotalPopulationByContinentYearAndAge(
       database,
-      2020,
-      "100+"
+      2019,
+      "25-29"
     );
     console.log(result2);
+    await client.close();
   } catch (e) {
     console.error(e);
   } finally {
@@ -91,42 +91,27 @@ async function getTotalPopulationByContinentYearAndAge(database, year, age) {
   const pipeline = [
     {
       $match: {
+        Country: {
+          $in: [
+            "ASIA",
+            "AFRICA",
+            "EUROPE",
+            "LATIN AMERICA AND THE CARIBBEAN",
+            "NORTHERN AMERICA",
+            "OCEANIA",
+          ],
+        },
         Year: year,
         Age: age,
       },
     },
     {
-      $lookup: {
-        from: "continents",
-        localField: "Country",
-        foreignField: "countries",
-        as: "continent",
-      },
-    },
-    {
-      $unwind: "$continent",
-    },
-    {
       $addFields: {
-        TotalPopulation: { $add: ["$M", "$F"] },
-      },
-    },
-    {
-      $group: {
-        _id: "$continent.name",
-        Year: { $first: "$Year" },
-        Age: { $first: "$Age" },
-        M: { $sum: "$M" },
-        F: { $sum: "$F" },
-        TotalPopulation: { $sum: "$TotalPopulation" },
-      },
-    },
-    {
-      $project: {
-        _id: 1,
-        M: 1,
-        F: 1,
-        TotalPopulation: 1,
+        TotalPopulation: {
+          $sum: {
+            $add: ["$M", "$F"],
+          },
+        },
       },
     },
   ];
